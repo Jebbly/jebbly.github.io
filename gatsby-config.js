@@ -1,11 +1,11 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `Notes by Jeffrey Liu`,
     author: {
-      name: `Kyle Mathews`,
-      summary: `who lives and works in San Francisco building useful things.`,
+      name: `Jeffrey Liu`,
+      summary: `who is a second-year Math & CS undergraduate at the University of Illinois Urbana-Champaign.`,
     },
-    description: `A starter blog demonstrating what Gatsby can do.`,
+    description: `A blog containing my notes and thoughts.`,
     siteUrl: `https://gatsbystarterblogsource.gatsbyjs.io/`,
     social: {
       twitter: `kylemathews`,
