@@ -19,12 +19,14 @@
     "gatsby-plugin-sharp": "^4.15.1",
     "gatsby-remark-copy-linked-files": "^5.15.0",
     "gatsby-remark-images": "^6.15.1",
+    "gatsby-remark-katex": "^6.16.0",
     "gatsby-remark-prismjs": "^6.15.0",
     "gatsby-remark-responsive-iframe": "^5.15.0",
     "gatsby-remark-smartypants": "^5.15.0",
     "gatsby-source-filesystem": "^4.15.0",
-    "gatsby-transformer-remark": "^5.15.1",
+    "gatsby-transformer-remark": "^5.16.0",
     "gatsby-transformer-sharp": "^4.15.1",
+    "katex": "^0.13.24",
     "prismjs": "^1.28.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -33,6 +35,7 @@
     "typeface-montserrat": "0.0.75"
   },
   "devDependencies": {
+    "gh-pages": "^4.0.0",
     "prettier": "^2.6.2"
   },
   "homepage": "https://github.com/gatsbyjs/gatsby-starter-blog#readme",
@@ -51,6 +54,7 @@
     "start": "gatsby develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
+    "deploy": "gatsby build --prefix-paths && gh-pages -d public"
   }
 }
