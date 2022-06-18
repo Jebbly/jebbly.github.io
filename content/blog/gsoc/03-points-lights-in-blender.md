@@ -186,10 +186,30 @@ Other errors included:
 - Not initializing the bounding box and bounding cones properly when doing SAOH
 - Forgetting to scale the random number used 
 - Swapping the values for $\theta_i'$ and $\theta'$
-Overall, debugging took me way longer than I'd like to admit, especially because a lot of the mistakes I made were silly errors. 
+Last but certainly not least, this was the error that took me at least 7 hours to debug:
+```cpp
+// intern\cycles\kernel\light\light_tree.h
+if (tree_u < left_probability) {
+  knode = left;
+  index = index + 1;
+  tree_u = tree_u * (left_importance + right_importance) / left_importance;
+  *pdf_factor *= left_probability;
+}
+else {
+  knode = right;
+  index = knode->child_index;
+  tree_u = (tree_u * (left_importance + right_importance) - left_importance) /
+            right_importance;
+  *pdf_factor *= (1 - left_probability);
+}
+```
+The error is in the else statement, where ``knode = right`` is called before ``index = knode->child_index``. As a result, when we traverse to the node where ``child_index`` is set to the last index in the array, we're now in an interior node but ``index`` is the last index possible. Then since ``knode`` is still at an interior node, we try to access the left child which is ``index + 1`` and thus out of bounds.
 
-I'm still encountering some slight differences in the scenes with more test lights - I suspect that I'm missing something in the importance calculation because these differences go away when I fix the return value of ``light_tree_node_importance()`` to ``1.0f``. I'll be sure to update this post once I figure out what the issue is (it's probably something obvious that I missed again).
+I guess after a few hours of debugging already, I didn't have it in me to catch this bug by inspection - I honestly wasn't expecting this error at all. Since the conditional is probabilistic, I never encountered it when I was stepping through the code line-by-line. I was also running the render tests through a release-mode build where there were no assertions. I finally hit the assertion fail when I accidentally continued execution in my line-by-line debugging in a debug-mode build.
 
+Now the implementation finally has some degree of accuracy when it comes to point lights (at least in special cases). In scenes with lots of point lights, there seems to be some more significant differences in the edges of the cubes. When I increase the sample size, the error there does still decrease, but at a slower rate than the rest of the render. This might be something I'll look into again later, but I suspect that it's mostly a precision thing, or something related to the normals near the edges of the cube. 
+
+Overall, debugging took me way longer than I'd like to admit, but in a sense, I guess it's a necessary evil. I definitely learned a lot through it, and I hope that addressing these errors early on will make it easier when debugging further features.
 
 ## Closing Thoughts
 
@@ -200,6 +220,6 @@ This was my first time really diving into Blender's source code, so it was reall
 4. Volumes
 5. GPU Implementation
 
-As for the immediate next steps, I'd really like to double-check all of code to figure out what the issue is in the scenes with more point lights. After that, it should be pretty easy to support spot lights and area lights. Since they're just different lights, it should just be a matter of handling their orientation bounds appropriately. After that, emissive triangles are next on the list - this should also be relatively straight-forward to implement as long as the bounds are constructed properly. 
+As for the immediate next steps it should be pretty easy to support spot lights and area lights. Since they're just different lights, it should just be a matter of handling their orientation bounds appropriately. After that, emissive triangles are next on the list - this should also be relatively straight-forward to implement as long as the bounds are constructed properly. 
 
 As usual, please let me know if there are any errors in this post - I would love to better my understanding of things! If you have any questions or concerns, feel free to ask on [the devtalk feedback thread](https://devtalk.blender.org/t/gsoc-2022-many-lights-sampling-in-cycles-x-feedback-thread/24773). If you also have any scenes with a lot of lights, please do share them! I'll try to test them as soon as it's ready for testing.
