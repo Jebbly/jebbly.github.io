@@ -4,7 +4,9 @@ date: "2022-06-18"
 description: "A more detailed technical explanation of supporting the many lights algorithm for point lights in Blender."
 ---
 
-This is finally going to be a more technical post and as the title suggests, I'm going to cover how the many lights algorithm supports point lights in Blender. I expect this to be a slightly lengthier post because I want record some insights I've discovered about Cycles, some details that Brecht and Lukas have explained to me, and some more details about the algorithm itself.
+This is finally going to be a more technical post. As the title suggests, I'm going to cover how the many lights algorithm supports point lights in Blender. I expect this to be a slightly lengthier post because I want record some insights I've discovered about Cycles, some details that Brecht and Lukas have explained to me, and some more details about the algorithm itself. Before reading this, I would highly recommend reading either my previous posts or [the original paper](http://www.aconty.com/pdf/many-lights-hpg2018.pdf). 
+
+Also, just as an update, it seems like Cycles has recently updated their device code and no longer refers to the device arrays as "textures" anymore. You'll see what I mean if you read the section about transferring to device-side - just know that "data arrays" are now the equivalent of what I meant by "textures."
 
 ## Implementation
 
