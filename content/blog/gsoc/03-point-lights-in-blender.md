@@ -79,10 +79,10 @@ Now we need to add an array of this struct to the ``DeviceScene``. This is what 
 // intern\cycles\scene\scene.h
 class DeviceScene {
 public:
-    ...
-    /* light tree */
-    device_vector<KernelLightTreeNode> light_tree_nodes;
-    ...
+...
+/* light tree */
+device_vector<KernelLightTreeNode> light_tree_nodes;
+...
 }
 
 // intern\cycles\scene\scene.cpp
@@ -158,8 +158,8 @@ Then the function ``light_sample()`` in the device kernel uses this PDF factor t
 ```cpp
 // intern\cycles\scene\light.cpp
 if (scene->integrator->get_use_light_tree()) {
-      kintegrator->pdf_triangles = 1.0f;
-      kintegrator->pdf_lights = 1.0f;
+  kintegrator->pdf_triangles = 1.0f;
+  kintegrator->pdf_lights = 1.0f;
 }
 else {
   // code from above
