@@ -1,6 +1,6 @@
 ---
 title: Adding More Light Types
-date: "2022-06-25"
+date: "2022-07-02"
 description: "How different light types in Blender are used in the many lights sampling algorithm."
 ---
 
