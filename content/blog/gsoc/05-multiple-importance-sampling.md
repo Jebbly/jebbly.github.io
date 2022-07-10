@@ -116,8 +116,9 @@ int LightTree::flatten_tree(const LightTreeBuildNode *node, int &offset, int par
   return current_index;
 }
 ```
-Note that the first call to this function passes an argument of ``-1`` to the ``parent`` parameter, so we know when we're at the root. Now that we have a way to traverse up the tree, we're ready to try calculating some probabilities! The first step is to find the probability of actually selecting the light when we're at the leaf node:
+Note that the first call to this function passes an argument of ``-1`` to the ``parent`` parameter, so we know when we're at the root. Now that we have a way to traverse up the tree, we're ready to try calculating some probabilities! The first step is to find the probability of actually sampling from the light tree, which is its relative importance compared to the distant lights:
 ```cpp
+// intern\cycles\kernel\light\light_tree.h
 ccl_device float light_tree_pdf(KernelGlobals kg, const float3 P, const float3 N, const int prim)
 {
   float distant_light_importance = light_tree_distant_light_importance(
@@ -130,7 +131,15 @@ ccl_device float light_tree_pdf(KernelGlobals kg, const float3 P, const float3 N
   const float total_group_importance = light_tree_importance + distant_light_importance;
   assert(total_group_importance != 0.0f);
   float pdf = light_tree_importance / total_group_importance;
-
+  ...
+}
+```
+Next, we find the probability of actually selecting the light when we're at the leaf node:
+```cpp
+// intern\cycles\kernel\light\light_tree.h
+ccl_device float light_tree_pdf(KernelGlobals kg, const float3 P, const float3 N, const int prim)
+{
+  ...
   const int emitter = (prim >= 0) ? kernel_data_fetch(triangle_to_tree, prim) : kernel_data_fetch(light_to_tree, ~prim);
   ccl_global const KernelLightTreeEmitter* kemitter = &kernel_data_fetch(light_tree_emitters,
                                                                          emitter);
@@ -154,6 +163,7 @@ ccl_device float light_tree_pdf(KernelGlobals kg, const float3 P, const float3 N
 ```
 We use our newly created arrays to find out the position in the ``light_tree_emitters``, and we then query the ``parent_index`` to find which leaf node contains this emitter. Our leaf node contains all the information we need about the primitives it contains, so we iterate through and find our specific primitive's relative weight. Next, we want to find the probability of actually traversing to this leaf node:
 ```cpp
+// intern\cycles\kernel\light\light_tree.h
 ccl_device float light_tree_pdf(KernelGlobals kg, const float3 P, const float3 N, const int prim)
 {
   ...
@@ -195,7 +205,7 @@ This is the entire process of sampling the light tree, so we can finally return 
 
 
 ### Distant Light Group
-The easy case to compute the PDF is the distant lights group. All we have to do is calculate the importance of that specific light, and then divide that by the total importance of the distant lights. We also need to multiply by ``(1 - kernel_data.integrator.pdf_light_tree)``, which is the probability of sampling from the distant light group and not the light tree:
+The easy case to compute the PDF is the distant lights group. All we have to do is calculate the importance of that specific light, and then divide that by the total importance of the distant lights. We also need to multiply by the probability of sampling from the distant light group and not the light tree:
 ```cpp
 // intern\cycles\kernel\light\light_tree.h
 ccl_device float distant_lights_pdf(KernelGlobals kg, const float3 P, const float3 N, const int prim)
