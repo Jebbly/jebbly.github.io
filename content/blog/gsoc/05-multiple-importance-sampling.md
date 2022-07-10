@@ -120,7 +120,16 @@ Note that the first call to this function passes an argument of ``-1`` to the ``
 ```cpp
 ccl_device float light_tree_pdf(KernelGlobals kg, const float3 P, const float3 N, const int prim)
 {
-  float pdf = kernel_data.integrator.pdf_light_tree;
+  float distant_light_importance = light_tree_distant_light_importance(
+      kg, P, N, kernel_data.integrator.num_distant_lights);
+  float light_tree_importance = 0.0f;
+  if (kernel_data.integrator.num_distribution > kernel_data.integrator.num_distant_lights) {
+    const ccl_global KernelLightTreeNode *kroot = &kernel_data_fetch(light_tree_nodes, 0);
+    light_tree_importance = light_tree_cluster_importance(kg, P, N, kroot);
+  }
+  const float total_group_importance = light_tree_importance + distant_light_importance;
+  assert(total_group_importance != 0.0f);
+  float pdf = light_tree_importance / total_group_importance;
 
   const int emitter = (prim >= 0) ? kernel_data_fetch(triangle_to_tree, prim) : kernel_data_fetch(light_to_tree, ~prim);
   ccl_global const KernelLightTreeEmitter* kemitter = &kernel_data_fetch(light_tree_emitters,
@@ -191,7 +200,16 @@ The easy case to compute the PDF is the distant lights group. All we have to do 
 // intern\cycles\kernel\light\light_tree.h
 ccl_device float distant_lights_pdf(KernelGlobals kg, const float3 P, const float3 N, const int prim)
 {
-  float pdf = (1 - kernel_data.integrator.pdf_light_tree);
+  float distant_light_importance = light_tree_distant_light_importance(
+      kg, P, N, kernel_data.integrator.num_distant_lights);
+  float light_tree_importance = 0.0f;
+  if (kernel_data.integrator.num_distribution > kernel_data.integrator.num_distant_lights) {
+    const ccl_global KernelLightTreeNode *kroot = &kernel_data_fetch(light_tree_nodes, 0);
+    light_tree_importance = light_tree_cluster_importance(kg, P, N, kroot);
+  }
+  const float total_group_importance = light_tree_importance + distant_light_importance;
+  assert(total_group_importance != 0.0f);
+  float pdf = distant_light_importance / total_group_importance;
 
   /* The light_to_tree array doubles as a lookup table for
    * both the light tree as well as the distant lights group.*/
