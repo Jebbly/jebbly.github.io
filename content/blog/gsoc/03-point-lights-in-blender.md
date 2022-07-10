@@ -117,7 +117,7 @@ The importance of a node cluster should thus be an approximation of how much it 
 This is how the symbols are defined:
 - $\theta$ is the angle formed between the cluster's bounding cone axis and the vector pointing from the centroid to the shading point,
 - $\theta_u$ is the max angle required to encompass the entire bounding box (around an vector pointing from the shading point to the centroid),
-- $\theta_i$ is the angle between the shading point normal .
+- $\theta_i$ is the angle between the shading point normal and the centroid.
 The paper then gives the importance measure as follows:
 $$
 I = \frac{f \lvert \cos(\theta_i') \rvert}{d^2} \times
