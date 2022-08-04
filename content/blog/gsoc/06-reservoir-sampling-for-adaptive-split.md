@@ -79,5 +79,5 @@ This should extend to the other values, which would imply that our estimator rem
 $$
 \sum_{i = 1}^n p_i = 1,
 $$
-where $n$ is the total number of lists containing some sample $X$ and $p_i$ is the probability that the rest of the list $i$ is constructed.
+where $n$ is the total number of lists containing some sample $X$ and $p_i$ is the probability that the rest of the list $i$ is constructed. Furthermore, my guess is that this will extend cleanly to the continuous case, although this is also where I'm having some trouble formalizing things.
 
