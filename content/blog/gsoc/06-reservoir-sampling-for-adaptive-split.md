@@ -1,6 +1,6 @@
 ---
 title: Weighted Reservoir Sampling for Adaptive Splitting
-date: "2022-07-29"
+date: "2022-08-04"
 description: "The Cycles version of adaptive splitting."
 ---
 
