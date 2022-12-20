@@ -1,19 +1,21 @@
 ---
 title: Weighted Reservoir Sampling for Adaptive Splitting
-date: "2022-08-04"
+date: "2022-08-11"
 description: "The Cycles version of adaptive splitting."
 ---
+
+**NOTE:** This branch has finally been merged into master (yay!). It seems like most of the work below was reverted due to its substantially larger overhead, but I'm leaving this post here because I still think it's an interesting idea to explore.
 
 As the algorithm has improved, we've found that the importance heuristic alone can only go so far. For example, here are some obvious artifacts in a test scene made by Alaska (special thanks for so much debugging help!):
 
 ![Area Light Issue](/images/06-no-splitting-issue.jpg)
 
-Here, that dark region is where the importance heuristic thinks that the area light will be a heavy contributor, but it's actually cutoff already. It's especially extreme at low samples, but just in general, it's something we need to fix. 
+Here, that dark region is where the importance heuristic thinks that the area light will be a heavy contributor, but it's actually cutoff already. It's especially extreme at low samples, but just in general, it's something we need to fix.
 
 The original paper doesn't really discuss any issues of this nature, but it does heavily emphasize that the adaptive splitting is an essential part of their work. The point of adaptive spltting is that sometimes, the light tree node's variance is pretty high, so it's safer to just sample from both the left and right child in those cases. However, the caveat here is that Cycles is structured such that the direct light sampling is expected to use a single light at a time, so we can't exactly just continue adding samples.
 
 
-## Potential Solutions 
+## Potential Solutions
 ### Resampled Importance Sampling
 
 The first proposed solution was to implement resampled importance sampling (RIS). This is a topic that I've only briefly skimmed over so far, and also not our final solution, so I'll keep this section brief. The general idea is that we'll do the adaptive splitting, but we keep track of all the samples in a list. Once we've populated our list, we can use a more refined computation (e.g. computing an actual `LightSample`) to weight each entry when we're choosing our final sample. This method kind of allows us to consider the proposed samples from adaptive splitting, and would be especially useful in cases like above where the original importance heuristic is off.
@@ -81,3 +83,10 @@ $$
 $$
 where $n$ is the total number of lists containing some sample $X$ and $p_i$ is the probability that the rest of the list $i$ is constructed. Furthermore, my guess is that this will extend cleanly to the continuous case, although this is also where I'm having some trouble formalizing things.
 
+
+## Closing Thoughts
+
+As mentioned at the top, there were a few reasons why this idea didn't pan out:
+1. It was hard to convince that this estimator would remain unbiased;
+2. Regardless of if it remained or not, each sample was taking too much time to compute. 
+But it was a really interesting idea! I also got to talk more about it with Chris Wyman (really cool person at NVIDIA who wrote a chapter about Weighted Reservoir Sampling in Raytracing Gems II) at SIGGRAPH 2022. That might deserve a post of its own, but the TLDR is that I volunteered there, met a lot of cool people, including Ron Roosendaal himself, and had lots of fun!
