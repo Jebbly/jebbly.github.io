@@ -1,13 +1,14 @@
 ---
 layout: post
-title: Motivating Many Lights Sampling
+title: Motivating Many Lights Sampling with a Light Tree 
 date: 2022-06-08
 description: An introduction to the many lights sampling algorithm and how I plan to implement it in Blender.
 tags: path-tracing
 categories: gsoc-2022
+thumbnail: assets/img/blog/gsoc/many-lights-scene.png
 ---
 
-To start off, I'll try to describe the motivation for the [many lights sampling algorithm](http://www.aconty.com/pdf/many-lights-hpg2018.pdf). In general for Monte Carlo estimation, we want to find ways to obtain the same result with fewer samples and/or obtain more precise results with the same number of samples.
+To start off, I'll try to describe the motivation for the [many lights sampling algorithm](https://dl.acm.org/doi/10.1145/3233305). In general for Monte Carlo estimation, we want to find ways to obtain the same result with fewer samples and/or obtain more precise results with the same number of samples.
 
 ## Importance Sampling
 

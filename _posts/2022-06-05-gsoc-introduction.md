@@ -5,6 +5,7 @@ date: 2022-06-05
 description: A self-introduction and my plans for this series.
 tags: path-tracing
 categories: gsoc-2022
+thumbnail: assets/img/blog/gsoc/gsoc-logo.jpg
 ---
 
 Welcome to the first post of my blog! This is something I've always kind of wanted to do but wasn't sure where to start or what to post. Fortunately, participating in Google's Summer of Code (GSoC) has finally given me the push that I needed to get going.

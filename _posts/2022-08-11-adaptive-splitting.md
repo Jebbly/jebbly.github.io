@@ -5,13 +5,14 @@ date: 2022-08-11
 description: The Cycles version of adaptive splitting.
 tags: path-tracing
 categories: gsoc-2022
+thumbnail: assets/img/blog/gsoc/splitting-fix.jpg
 ---
 
 **NOTE:** This branch has finally been merged into master (yay!). It seems like most of the work below was reverted due to its substantially larger overhead, but I'm leaving this post here because I still think it's an interesting idea to explore.
 
 As the algorithm has improved, we've found that the importance heuristic alone can only go so far. For example, here are some obvious artifacts in a test scene made by Alaska (special thanks for so much debugging help!):
 
-{% include figure.liquid loading="eager" path="assets/img/blog/06-no-splitting-issue.jpg" class="img-fluid rounded z-depth-1" description="Area Light Issue" %}
+{% include figure.liquid loading="eager" path="assets/img/blog/gsoc/no-splitting-issue.jpg" class="img-fluid rounded z-depth-1" description="Area Light Issue" %}
 
 Here, that dark region is where the importance heuristic thinks that the area light will be a heavy contributor, but it's actually cutoff already. It's especially extreme at low samples, but just in general, it's something we need to fix.
 
@@ -63,7 +64,7 @@ $$
 
 However, in the case of weighted reservoir sampling, calculating the true probability of selecting $$p(X_i)$$ is pretty tricky. This is because the stream of candidates varies based on how we traverse the light tree, which in turn affects the weights. As a simple example, suppose we have the following tree where we split at the root:
 
-{% include figure.liquid loading="eager" path="assets/img/blog/06-example-tree.png" class="img-fluid rounded z-depth-1" description="Example Tree" %}
+{% include figure.liquid loading="eager" path="assets/img/blog/gsoc/example-tree.png" class="img-fluid rounded z-depth-1" description="Example Tree" %}
 
 The values are used as the relative weights, e.g. there's a $$2/(2 + 3)$$ probability of selecting $$2$$ from the left child. Since we've split, we select an element from both children, and then compare the two elements again. Let $$X_1, X_2$$ be the random variables representing the left and right child respectively, and $$X_F$$ be the final sample. Then we have:
 

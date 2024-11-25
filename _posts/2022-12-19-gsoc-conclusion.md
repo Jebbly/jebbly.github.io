@@ -5,6 +5,7 @@ date: 2022-12-19
 description: A three month late reflection on GSoC 2022.
 tags: path-tracing
 categories: gsoc-2022
+thumbnail: assets/img/blog/gsoc/attic-mls-cropped.png
 images:
   compare: true
   slider: true
@@ -15,8 +16,8 @@ I was planning on writing this post a lot sooner, but work for the fall semester
 Here's the render after 30 seconds of rendering using the master branch (left), compared to 30 seconds of rendering on the GSoC branch (right):
 
 <img-comparison-slider>
-  {% include figure.liquid path="assets/img/blog/07-attic-original.png" class="img-fluid rounded z-depth-1" slot="first" description="Cycles Implementation" %}
-  {% include figure.liquid path="assets/img/blog/07-attic-mls.png" class="img-fluid rounded z-depth-1" slot="second" description="New Implementation" %}
+  {% include figure.liquid path="assets/img/blog/gsoc/attic-original.png" class="img-fluid rounded z-depth-1" slot="first" description="Cycles Implementation" %}
+  {% include figure.liquid path="assets/img/blog/gsoc/attic-mls.png" class="img-fluid rounded z-depth-1" slot="second" description="New Implementation" %}
 </img-comparison-slider>
 
 There's still some noise, but it's a lot better. Since I'm also writing this extremely late, I get to say that other people have picked up the work and got it merged into master!

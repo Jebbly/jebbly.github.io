@@ -5,6 +5,7 @@ date: 2022-06-18
 description: A more detailed technical explanation of supporting the many lights algorithm for point lights in Blender.
 tags: path-tracing
 categories: gsoc-2022
+thumbnail: assets/img/blog/gsoc/correct-render.png
 images:
   compare: true
   slider: true
@@ -118,7 +119,7 @@ Now that our light tree is on the device, we can use it to take more informed sa
 2. The BSDF term, $$f(p, \omega_i, \omega_o)$$.
 The importance of a node cluster should thus be an approximation of how much it relatively contributes to these terms. To do this, we want to loosely bound the range of possible values. This is the diagram that the original paper uses:
 
-{% include figure.liquid loading="eager" path="assets/img/blog/03-diagram.png" class="img-fluid rounded z-depth-1" description="Importance Measure Diagram" %}
+{% include figure.liquid loading="eager" path="assets/img/blog/gsoc/diagram.png" class="img-fluid rounded z-depth-1" description="Importance Measure Diagram" %}
 
 This is how the symbols are defined:
 - $$\theta$$ is the angle formed between the cluster's bounding cone axis and the vector pointing from the centroid to the shading point,
@@ -183,13 +184,13 @@ If you've read the original paper, “Importance Sampling of Many Lights With Ad
 To debug and test this scene, I created a bunch of scenes that just had a bunch of point lights and no background light. To start, the goal was to get a single point light and cube rendering properly. LazyDodo pointed me towards a useful tool called ``idiff`` which can be used to compare 2 renders, which I would use to verify the accuracy of my implementation when compared to the default Cycles render. It also lets you output a difference image and scale the results (to make it easier to see), which was very useful. Lukas also recommended another tool, [tev](https://github.com/Tom94/tev), to compare images, but I haven't gotten the chance to try it out yet. Anyways, this is an example of why ``idiff`` is important; here are two of the first renders I did. With one point light, no background light, and a single cube, the left is the Cycles default implementation and the right is my new implementation:
 
 <img-comparison-slider>
-  {% include figure.liquid path="assets/img/blog/03-correct_render.png" class="img-fluid rounded z-depth-1" slot="first" description="Cycles Implementation" %}
-  {% include figure.liquid path="assets/img/blog/03-test_render.png" class="img-fluid rounded z-depth-1" slot="second" description="New Implementation" %}
+  {% include figure.liquid path="assets/img/blog/gsoc/correct-render.png" class="img-fluid rounded z-depth-1" slot="first" description="Cycles Implementation" %}
+  {% include figure.liquid path="assets/img/blog/gsoc/test-render.png" class="img-fluid rounded z-depth-1" slot="second" description="New Implementation" %}
 </img-comparison-slider>
 
 Looks pretty similar, right? Maybe to the naked eye, but ``idiff`` shows the following when I scale the absolute difference by 100:
 
-{% include figure.liquid loading="eager" path="assets/img/blog/03-diff.jpg" class="img-fluid rounded z-depth-1" description="Scaled Image Diff" %}
+{% include figure.liquid loading="eager" path="assets/img/blog/gsoc/diff.jpg" class="img-fluid rounded z-depth-1" description="Scaled Image Diff" %}
 
 In reality, the right corner of my implementation is too dark while the other corners are too bright. There were actually a few things wrong with my first implementation. I accidentally swapped the normal and position arguments (this took an embarrasingly long time to figure out), and I didn't account for the pre-baked light PDFs. 
 

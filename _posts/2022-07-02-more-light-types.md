@@ -5,6 +5,7 @@ date: 2022-07-02
 description: How different light types in Blender are used in the many lights sampling algorithm.
 tags: path-tracing
 categories: gsoc-2022
+thumbnail: assets/img/blog/gsoc/more-light-types.png
 ---
 
 In this post, I'll be discussing how the different light types in Blender were incorporated into the many lights sampling algorithm. Some of these lights could be immediately plugged in to the existing work, but others needed some redesigning of the logic.

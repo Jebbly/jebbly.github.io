@@ -5,6 +5,7 @@ date: 2022-07-09
 description: Fixes to the PDF calculations to adjust for the light tree sampling.
 tags: path-tracing
 categories: gsoc-2022
+thumbnail: assets/img/blog/gsoc/mis-lights.jpg
 ---
 
 If you recall from my second post, importance sampling is the name of the game, but I actually kind of omitted something from that chapter. Notice that there's actually two main terms in the integrand of the rendering equation:
