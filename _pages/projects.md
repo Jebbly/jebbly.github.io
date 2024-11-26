@@ -2,7 +2,7 @@
 layout: page
 title: projects
 permalink: /projects/
-description: A growing collection of your cool projects.
+description: Most of my work in the past few years has been related to work or research, so I haven't found too much time for personal projects recently. The projects listed here are mostly old or coursework related, but I still plan to add to this in the future!
 nav: true
 nav_order: 3
 display_categories: [work, fun]
