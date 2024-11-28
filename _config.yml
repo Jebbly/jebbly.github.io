@@ -313,8 +313,8 @@ display_categories: ["gsoc-2022"] # these categories will be displayed on the fr
 # -----------------------------------------------------------------------------
 
 scholar:
-  last_name: [Einstein]
-  first_name: [Albert, A.]
+  last_name: [Liu]
+  first_name: [Jeffrey]
 
   style: apa
   locale: en
