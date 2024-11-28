@@ -1,11 +1,11 @@
 ---
 layout: page
-title: projects
+title: personal projects
 permalink: /projects/
-description: Most of my work in the past few years has been related to work or research, so I haven't found too much time for personal projects recently. The projects listed here are mostly old or coursework related, but I still plan to add to this in the future!
+description: Most of my work in the past few years has been related to work or research, so I haven't found too much time for personal projects recently. The projects listed here are mostly old or coursework related, so I'm not sharinig them because I think they're impressive, but because I think they still represent things I'm interested in. Hoping to find time to add to this in the near future!
 nav: true
 nav_order: 3
-display_categories: [work, fun]
+display_categories: [graphics, physics, vision]
 horizontal: false
 ---
 
