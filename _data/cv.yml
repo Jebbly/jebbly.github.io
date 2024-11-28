@@ -2,96 +2,117 @@
   type: map
   contents:
     - name: Full Name
-      value: Albert Einstein
-    - name: Date of Birth
-      value: 14th March 1879
+      value: Jeffrey Liu
     - name: Languages
-      value: English, German
+      value: English (Native Proficiency), Mandarin (Speaking Proficiency)
 
 - title: Education
   type: time_table
   contents:
-    - title: PhD
-      institution: University of Zurich, Zurich, Switzerland
-      year: 1905
+    - title: Bachelor of Science in Mathematics and Computer Science, Minor in Physics
+      institution: University of Illinois Urbana-Champaign
+      year: 2021 - 2025
       description:
-        - Description 1.
-        - Description 2.
-        - title: Description 3.
+        - Institutional GPA - 4.00
+        - title: Relevant Coursework
           contents:
-            - Sub-description 1.
-            - Sub-description 2.
-    - title: Federal teaching diploma
-      institution: Eidgenössische Technische Hochschule, Zurich, Switzerland
-      year: 1900
-      description:
-        - Description 1.
-        - Description 2.
+            - Probability Theory (A) 
+            - Computational Photography (A)
+            - Interactive Computer Graphics (A+)
+            - Deep Learning for Computer Vision (A)
+            - Machine Perception (A+)
+            - Applied Parallel Programming (A)
+            - Numerical Analysis (A+)
+            - Computer System Organization (In Progress)
+            - Advanced Topics in Computer Architecture (Planned)
+            - Parallel Computer Architecture (Planned)
+            - Electromagnetic Fields (A+)
+            - Light Lab (A+)
+        - Activities - SIGGRAPH@UIUC, Table Tennis
 
-- title: Experience
+- title: Research Experience
   type: time_table
   contents:
-    - title: Professor of Theoretical Physics
-      institution: Institute for Advanced Study, Princeton University
-      year: 1933 - 1955
+    - title: Undergraduate Researcher
+      institution: UCI Physics-Based Graphics Lab (Advised by Prof. Shuang Zhao)
+      year: 2024 - Present
       description:
-        - Description 1.
-        - Description 2.
-        - title: Description 3.
-          contents:
-            - Sub-description 1.
-            - Sub-description 2.
-    - title: Visiting Professor
-      institution: California Institute of Technology, Pasadena, California, US
-      year: 1933
+        - TBA!
+
+    - title: Research Intern
+      institution: NVIDIA Real-Time Graphics (Advised by Dr. Chris Wyman)
+      year: 2024 - Present
       description:
-        - Description 1.
-        - Description 2.
+        - TBA!
 
-    - title: Director
-      institution: Kaiser Wilhelm Institute for Physics, Berlin, Germany.
-      year: 1917-1933
-
-    - title: Professor of Theoretical Physics
-      institution: Karl-Ferdinand University, Prague, Czechoslovakia
-      year: 1911 - 1917
+    - title: Undergraduate Researcher
+      institution: ILLIXR Lab (Advised by Prof. Sarita Adve)
+      year: 2022-Present
       description:
+        - Researching performance tradeoffs between accuracy of eye-tracking and quality of foveated rendering
+        - Experimenting with custom late-stage asynchronous reprojection techniques to reduce motion-to-photon latency
+        - Conducting user studies to evaluate latency compensation under various network conditions for offloaded rendering
 
-    - title: Associate Professor of Theoretical Physics
-      institution: University of Zurich, Zurich, Switzerland
-      year: 1909 - 1911
+    - title: Undergraduate Researcher
+      institution: Illinois Mathematics Lab (Advised by Prof. Joseph Rosenblatt)
+      year: 2023
+      description:
+        - Evaluated the quality of low-degree spherical harmonic terms for function reconstruction
+        - Investigated the relation between spherical harmonics, Fourier series, and their completeness as eigenfunctions
 
-- title: Open Source Projects
+- title: Teaching Experience
   type: time_table
   contents:
-    - title: <a href="https://github.com/alshedivat/al-folio">al-folio</a>
-      year: 2015-now
-      description: A beautiful, simple, clean, and responsive Jekyll theme for academics.
+    - title: Lead Course Assistant
+      institution: UIUC CS 415 - Game Development
+      year: 2021-2024
+      description:
+        - Worked for 5 semesters (FA21, SP22, FA22, FA23, SP24) to develop and refine assignments
+        - Consulted 4-6 project teams per semester, directing progress towards 3 milestones for a course-long project to create a game
+        - Mentored individual students catching up on course material or needing specific help
+
+- title: Work Experience
+  type: time_table
+  contents:
+    - title: XR Engineering Intern
+      institution: Epic Games
+      year: 2023
+      description:
+        - Added support for split-screen rendering of DFAO in UE5
+        - Investigated optimizations for multi-view rendering to reduce memory usage by >50% while maintaining TSR stability
+
+    - title: Software Engineer Consultant
+      institution: Glodon USA East Coast
+      year: 2021
+      description:
+        - Developed integration and performance tests to support headless testing by parsing Nsight Systems’ raw SQL for CPU/GPU workloads
+        - Improved coverage by 3x and efficiency by 80x
+
+- title: Open Source Contributions
+  type: time_table
+  contents:
+    - title: <a href="https://illixr.org/">ILLIXR Testbed</a>
+      year: 2022-Present
+      description: 
+        - Updating graphics backend from OpenGL to Vulkan
+        - Implementing new asynchronous reprojection algorithms
+    - title: <a href="https://www.blender.org/">Blender</a>
+      year: 2022
+      description: 
+        - Implemented “Importance Sampling of Many Lights with Adaptive Tree Splitting” in Cycles (released in Blender 3.5)
+        - Wrote weekly community progress updates and a technical development log, totaling over 30,000 views
+
+
+    - title: <a href="https://brlcad.org/">BRL-CAD</a>
+      year: 2020
+      description: Integrated the appleseed production renderer for BRL-CAD geometry with custom ray-intersections.
 
 - title: Honors and Awards
   type: time_table
   contents:
-    - year: 1921
+    - year: 2021-2024
       items:
-        - Nobel Prize in Physics
-        - Matteucci Medal
-    - year: 2029
+        - Dean's List FA21, SP22, FA22, SP23, FA23, SP24
+    - year: 2019
       items:
-        - Max Planck Medal
-
-- title: Academic Interests
-  type: nested_list
-  contents:
-    - title: Topic 1.
-      items:
-        - Description 1.
-        - Description 2.
-    - title: Topic 2.
-      items:
-        - Description 1.
-        - Description 2.
-
-- title: Other Interests
-  type: list
-  contents:
-    - <u>Hobbies:</u> Hobby 1, Hobby 2, etc.
+        - Google Code-in Grand Prize Winner
