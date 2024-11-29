@@ -19,7 +19,7 @@ This was created as a team project for UIUC's CS 222. We tried to combine a mish
     The 3D editor has some basic functionality, including loading an environment map, uploading OBJ files (with no material...), arranging objects around, and visualizing a grid. The idea was to keep it pretty simple and rely on style transfer to finish the job.
 </div>
 
-The current viewport could be saved as either the content image *or* the style image, although content makes much more sense. We then used [an optimized TensorFlow style transfer model](https://blog.tensorflow.org/2020/04/optimizing-style-transfer-to-run-on-mobile-with-tflite.html) as a post-processing step on the content image.
+The current viewport could be saved as either the content image _or_ the style image, although content makes much more sense. We then used [an optimized TensorFlow style transfer model](https://blog.tensorflow.org/2020/04/optimizing-style-transfer-to-run-on-mobile-with-tflite.html) as a post-processing step on the content image.
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
@@ -32,4 +32,4 @@ The current viewport could be saved as either the content image *or* the style i
 
 If you don't want to manually create a scene, you also have the option of uploading a pre-created content image. There's also a [live demo](https://style-transfer-backend-ix3zc64heq-uc.a.run.app/) to try it out, with a gallery of previously stylized photos.
 
-It generally seems pretty hard to reproduce the quality of the results from the TensorFlow post, but it might also be the set of content images I've tested with. I'd love to play around with this more in the future though :) 
+It generally seems pretty hard to reproduce the quality of the results from the TensorFlow post, but it might also be the set of content images I've tested with. I'd love to play around with this more in the future though :)

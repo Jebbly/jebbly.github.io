@@ -3,7 +3,7 @@ layout: page
 title: Raycast Engine
 description: Implementation of raycasting and floorcasting in Python.
 img: assets/img/projects/python-raycaster/sample-thumbnail.jpg
-importance: 3   
+importance: 3
 category: graphics
 related_publications: false
 ---
@@ -18,4 +18,4 @@ This raycasting engine was my first "large" programming project to formalize my 
 
 Although raycasting with a 2D grid isn't too common nowadays (as far as I'm aware), it made me appreciate the type of math involved and definitely whet my appetite for more. In retrospect, I think that tutorial series was a great beginner project.
 
-The code isn't very interesting, but it's all on [GitHub](https://github.com/Jebbly/Python-Raycaster) to play around with. 
+The code isn't very interesting, but it's all on [GitHub](https://github.com/Jebbly/Python-Raycaster) to play around with.

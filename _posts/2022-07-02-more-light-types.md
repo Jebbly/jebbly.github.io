@@ -13,25 +13,27 @@ In this post, I'll be discussing how the different light types in Blender were i
 ## Different Light Types
 
 Blender has a variety of light types that all need to be supported by the algorithm. This includes:
+
 - Point, Spot, and Area Lights
 - Emissive Triangles
-- Distant and Background Lights 
-Each of these bullet points have slightly different places in the code, which I'll elaborate on below.
+- Distant and Background Lights
 
+Each of these bullet points have slightly different places in the code, which I'll elaborate on below.
 
 ### Point, Spot, and Area Lights
 
 Once we have point lights working, it's really immediate to also incorporate spot and area lights. All we have to do is update our light tree construction to account for their different bounding information (actually, I had to update some of the traversal code as well, but the next section will explain why I don't discuss it here). The first thing to get out of the way is that the energy calculations for these light types are exactly the same. Next, this is the different bounding cone information for each light type:
 
-| Light Type      | Axis | $$\theta_o$$ | $$\theta_e$$ |
-| :----: | :----: | :----: | :----: |
-| Point | Arbitrary | $$\pi$$ | $$\pi / 2$$ |
-| Spot | Spotlight Direction | 0 | Spotlight Angle |
-| Area | Normal Axis | 0 | $$\pi / 2$$ |
+| Light Type |        Axis         | $$\theta_o$$ |  $$\theta_e$$   |
+| :--------: | :-----------------: | :----------: | :-------------: |
+|   Point    |      Arbitrary      |   $$\pi$$    |   $$\pi / 2$$   |
+|    Spot    | Spotlight Direction |      0       | Spotlight Angle |
+|    Area    |     Normal Axis     |      0       |   $$\pi / 2$$   |
 
-This makes sense because point lights don't have a defined orientation direction while spot lights and area lights do. Implementing this in the code is also very straightforward using a bunch of conditionals. 
+This makes sense because point lights don't have a defined orientation direction while spot lights and area lights do. Implementing this in the code is also very straightforward using a bunch of conditionals.
 
-The bounding box information for these lights is only slightly more interesting, and there are only a few things to note. The point lights and spot lights have an associated ``size``. What this means is that they can actually emit light from a radius of that size, so our bounding box needs to account for that radius. On the other hand, area lights can either be a disk or a rectangle, and thus have 2 dimensions to them. They have the members ``axisu`` and ``axisv`` which correspond to the orientation of those dimensions, as well as a ``sizeu`` and ``sizev`` which dictate how far along the axis it goes. Knowing this, the code is also relatively straightforward:
+The bounding box information for these lights is only slightly more interesting, and there are only a few things to note. The point lights and spot lights have an associated `size`. What this means is that they can actually emit light from a radius of that size, so our bounding box needs to account for that radius. On the other hand, area lights can either be a disk or a rectangle, and thus have 2 dimensions to them. They have the members `axisu` and `axisv` which correspond to the orientation of those dimensions, as well as a `sizeu` and `sizev` which dictate how far along the axis it goes. Knowing this, the code is also relatively straightforward:
+
 ```cpp
 // intern\cycles\scene\light_tree.cpp
 Light *lamp = scene->lights[lamp_id];
@@ -47,7 +49,7 @@ if (type == LIGHT_POINT || type == LIGHT_SPOT) {
 }
 else if (type == LIGHT_AREA) {
   /* For an area light, sizeu and sizev determine the 2 dimensions of the area light,
-  * while axisu and axisv determine the orientation of the 2 dimensions. 
+  * while axisu and axisv determine the orientation of the 2 dimensions.
   * We want to add all 4 corners to our bounding box. */
   const float3 half_extentu = 0.5 * lamp->get_sizeu() * lamp->get_axisu() * size;
   const float3 half_extentv = 0.5 * lamp->get_sizev() * lamp->get_axisv() * size;
@@ -59,16 +61,15 @@ else if (type == LIGHT_AREA) {
 }
 ```
 
-In other parts of the Cycles code, the area light's size is also scaled by the ``size`` member. I've always seen this factor equal to 1.0 in my own debugging, but I've left it here just to be safe.
-
+In other parts of the Cycles code, the area light's size is also scaled by the `size` member. I've always seen this factor equal to 1.0 in my own debugging, but I've left it here just to be safe.
 
 ### Emissive Triangles
 
 Even though I have a separate section for emissive triangles, I'm not really going to talk about the bounding information calculation (most of it was based off the past GSoC work anyways). Instead, this is going to be about how emissive triangles made me realize that some of the traversal logic needed to be reconsidered.
 
-Originally, I didn't think there would be anything too special about triangle lights besides using the ``prim_id`` to distinguish them during light tree construction. However, when I got to traversal, I encountered a slight issue: although I could differentiate between a normal light source and an emissive triangle using the ``light_distribution`` array, I still didn't have enough information to calculate the importance. It's still possible to get the triangle's vertices to manually calculate the bounding box min/max and also take the cross product to find the orientation axis. But then there's also the issue of finding a proper energy estimate.
+Originally, I didn't think there would be anything too special about triangle lights besides using the `prim_id` to distinguish them during light tree construction. However, when I got to traversal, I encountered a slight issue: although I could differentiate between a normal light source and an emissive triangle using the `light_distribution` array, I still didn't have enough information to calculate the importance. It's still possible to get the triangle's vertices to manually calculate the bounding box min/max and also take the cross product to find the orientation axis. But then there's also the issue of finding a proper energy estimate.
 
-In any case, doing all of this work during traversal seems like a huge performance issue. Additionally, this information is stuff that we can calculate at construction time and then store for the future. So using the same idea as the ``device_vector<KernelLightTreeNode> light_tree_nodes``, there's an array on the device containing the bounding information for each emitter:
+In any case, doing all of this work during traversal seems like a huge performance issue. Additionally, this information is stuff that we can calculate at construction time and then store for the future. So using the same idea as the `device_vector<KernelLightTreeNode> light_tree_nodes`, there's an array on the device containing the bounding information for each emitter:
 
 ```cpp
 // intern\cycles\kernel\types.h
@@ -104,7 +105,7 @@ typedef struct KernelLightTreeEmitter {
 static_assert_align(KernelLightTreeEmitter, 16);
 ```
 
-The information under ``prim_id`` is the same as the information from the light distribution. However, by keeping it inside of this struct, we can remove our light tree kernel's dependency on the light distribution. There still is a lot of overlap between this struct and the ``KernelLightTreeNode`` struct, but it works for now. Now after our construction has sorted all of the primitives in order, we can fill out the corresponding bounding information:
+The information under `prim_id` is the same as the information from the light distribution. However, by keeping it inside of this struct, we can remove our light tree kernel's dependency on the light distribution. There still is a lot of overlap between this struct and the `KernelLightTreeNode` struct, but it works for now. Now after our construction has sorted all of the primitives in order, we can fill out the corresponding bounding information:
 
 ```cpp
 // intern\cycles\scene\light.cpp
@@ -140,20 +141,23 @@ for (int index = 0; index < num_distribution; index++) {
 dscene->light_tree_emitters.copy_to_device();
 ```
 
-The advantage of this approach is that all of the decision making is happening at construction time. During traversal, we don't need any conditionals to handle a different construction for each type of light. We just trust that all the information has been calculated correctly beforehand and then directly plug it into our formula. 
+The advantage of this approach is that all of the decision making is happening at construction time. During traversal, we don't need any conditionals to handle a different construction for each type of light. We just trust that all the information has been calculated correctly beforehand and then directly plug it into our formula.
 
-The last thing to do is to adjust the triangle sampling PDF. If you recall in my last post, I mentioned that the light distribution will pre-calculate some of the PDF. For example, for light sources, it knows that it'll be sampling uniformly over light samples, so it sets 
+The last thing to do is to adjust the triangle sampling PDF. If you recall in my last post, I mentioned that the light distribution will pre-calculate some of the PDF. For example, for light sources, it knows that it'll be sampling uniformly over light samples, so it sets
+
 ```cpp
 // intern\cycles\scene\light.cpp
 kintegrator->pdf_lights = 1.0f / num_lights;
-``` 
-On the other hand, the light distribution samples triangles relative to their total area. This is something that varies per-triangle, so the best that can be done is to pre-compute ``kintegrator->pdf_triangles`` as ``1.0f / trianglearea``. Then the contributing PDf is calculated during ``triangle_light_sample()``:
+```
+
+On the other hand, the light distribution samples triangles relative to their total area. This is something that varies per-triangle, so the best that can be done is to pre-compute `kintegrator->pdf_triangles` as `1.0f / trianglearea`. Then the contributing PDf is calculated during `triangle_light_sample()`:
+
 ```cpp
 // intern\cycles\kernel\light\light.h
 const float pdf = area * kernel_data.integrator.pdf_triangles;
 ```
-We'll also be using ``triangle_light_sample()``, but that's not going to be the PDF of our sampling method. Instead, we set ``kintegrator->pdf_triangles`` and then divide ``ls->pdf`` by the triangle's area to counteract the multiplication done inside of the function. This essentially converts the pre-computed PDF to ``1.0f``, so now we're free to control the PDF appropriately.
 
+We'll also be using `triangle_light_sample()`, but that's not going to be the PDF of our sampling method. Instead, we set `kintegrator->pdf_triangles` and then divide `ls->pdf` by the triangle's area to counteract the multiplication done inside of the function. This essentially converts the pre-computed PDF to `1.0f`, so now we're free to control the PDF appropriately.
 
 ### Distant and Background Lights
 
@@ -167,7 +171,8 @@ $$
 
 Technically there are a few more terms (cases where $$A_2$$ is selected from group $$A$$) but we can ignore them because they're all equal to $$0$$. The general idea is that to find the actual probability, we'd have to partition the probabilities into cases. So in this case, the true probability of selecting $$A_1$$ is the probability of selecting it when $$C = \{A_1, B_1\}$$ plus the probability of selecting it when $$C = \{A_1, B_2\}$$. In code, we'd be able to naturally find the value of a single one of these terms, but we'd have to do a lot of extra computation to find the others.
 
-The next best thing we can do is first decide whether we want to sample from the light tree or to sample from the distant lights. For now, the easiest way to do this is by examining their relative energies. The advantage to this approach is that we can pre-compute both of these during construction time, but in the future, we may want to introduce an appropriate importance heuristic to decide between the two. Here, ``pdf_light_tree`` is calculated as the relative energy of the light tree compared to the total energy involved:
+The next best thing we can do is first decide whether we want to sample from the light tree or to sample from the distant lights. For now, the easiest way to do this is by examining their relative energies. The advantage to this approach is that we can pre-compute both of these during construction time, but in the future, we may want to introduce an appropriate importance heuristic to decide between the two. Here, `pdf_light_tree` is calculated as the relative energy of the light tree compared to the total energy involved:
+
 ```cpp
 // intern\cycles\kernel\light\light_tree.h
 float tree_u = path_state_rng_1D(kg, rng_state, 1);
@@ -183,9 +188,10 @@ else {
 }
 ```
 
-The downside to this approach is that we'll have to perform a linear scan if we want to sample from the distant lights group. Realistically though, or at least from my perpective, most scenes shouldn't have that many distant lights. Furthermore, we can also compute importance heuristics if we choose to sample from the distant light group, so we can make more informed decisions about which light to sample. 
+The downside to this approach is that we'll have to perform a linear scan if we want to sample from the distant lights group. Realistically though, or at least from my perpective, most scenes shouldn't have that many distant lights. Furthermore, we can also compute importance heuristics if we choose to sample from the distant light group, so we can make more informed decisions about which light to sample.
 
-For now, ``light_tree_distant_light_importance()`` only returns the energy of the given distant light:
+For now, `light_tree_distant_light_importance()` only returns the energy of the given distant light:
+
 ```cpp
 // intern\cycles\kernel\light\light_tree.h
 const int num_distant_lights = kernel_data.integrator.num_distant_lights;
@@ -216,15 +222,17 @@ for (int i = 0; i < num_distant_lights; i++) {
   }
 }
 ```
-This is bound to change as we come up with better heuristics in the future.
 
+This is bound to change as we come up with better heuristics in the future.
 
 ## Closing Thoughts
 
-Thanks to the heavy debugging from the work with point lights, most of the math was pretty much working from the get-go. However, there's still a lot of optimizations to the heuristics that can (and will) be made. My main concern at the moment is that these heuristics don't take visibility into consideration, which can really hurt the sampling in extreme cases. For example in one case, we could be placing high importance on one group of lights and dedicating a lot of samples towards them, without realizing that they're actually all occluded! We'll have to have another discussion for this in the future, but one solution that comes to mind is to also randomly select between using the light tree sampling and using the default light distribution sampling. 
+Thanks to the heavy debugging from the work with point lights, most of the math was pretty much working from the get-go. However, there's still a lot of optimizations to the heuristics that can (and will) be made. My main concern at the moment is that these heuristics don't take visibility into consideration, which can really hurt the sampling in extreme cases. For example in one case, we could be placing high importance on one group of lights and dedicating a lot of samples towards them, without realizing that they're actually all occluded! We'll have to have another discussion for this in the future, but one solution that comes to mind is to also randomly select between using the light tree sampling and using the default light distribution sampling.
 
 Secondly, I also realized that there are 3 additional functions to update, which are used when Cycles performs indirect light samples (I'll be making a separate post about this). These functions are basically used when Cycles is sampling based off of the BSDF and the sample intersects a light source, so we need to calculate what the direct lighting's PDF would be in order to weight the multiple importance sampling. The functions are:
-- ``background_light_pdf()``
-- ``triangle_light_pdf()``
-- ``light_sample_from_intersection()``
+
+- `background_light_pdf()`
+- `triangle_light_pdf()`
+- `light_sample_from_intersection()`
+
 These functions are pretty self-explanatory, but it'll be a little tricky to incorporate the light tree into them. More on that in the next post!

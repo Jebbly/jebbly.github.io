@@ -8,7 +8,7 @@ category: physics
 related_publications: false
 ---
 
-Throughout the course of my physics minor, this holography lab was one of my favorite labs (even though the equipment was *really* old...). Without getting into too much detail, the general idea is that, in contrast to normal films that only reproduce 2D projections by only capturing light intensity, the holographic film can record the 3D appearance of a source object by also encoding phase information. 
+Throughout the course of my physics minor, this holography lab was one of my favorite labs (even though the equipment was _really_ old...). Without getting into too much detail, the general idea is that, in contrast to normal films that only reproduce 2D projections by only capturing light intensity, the holographic film can record the 3D appearance of a source object by also encoding phase information.
 
 <div class="row">
     <div class="col-sm-7 mt-3 mt-md-0">

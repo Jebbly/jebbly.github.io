@@ -16,7 +16,7 @@
         - Institutional GPA - 4.00
         - title: Relevant Coursework
           contents:
-            - Probability Theory (A) 
+            - Probability Theory (A)
             - Computational Photography (A)
             - Interactive Computer Graphics (A+)
             - Deep Learning for Computer Vision (A)
@@ -93,15 +93,14 @@
   contents:
     - title: <a href="https://illixr.org/">ILLIXR Testbed</a>
       year: 2022-Present
-      description: 
+      description:
         - Updating graphics backend from OpenGL to Vulkan
         - Implementing new asynchronous reprojection algorithms
     - title: <a href="https://www.blender.org/">Blender</a>
       year: 2022
-      description: 
+      description:
         - Implemented “Importance Sampling of Many Lights with Adaptive Tree Splitting” in Cycles (released in Blender 3.5)
         - Wrote weekly community progress updates and a technical development log, totaling over 30,000 views
-
 
     - title: <a href="https://brlcad.org/">BRL-CAD</a>
       year: 2020

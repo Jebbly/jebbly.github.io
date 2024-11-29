@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Motivating Many Lights Sampling with a Light Tree 
+title: Motivating Many Lights Sampling with a Light Tree
 date: 2022-06-08
 description: An introduction to the many lights sampling algorithm and how I plan to implement it in Blender.
 tags: path-tracing
@@ -24,7 +24,6 @@ If we only consider direct lighting for now, i.e. $$L_i(P, \omega_i)$$ is from a
 
 Alternatively, one basic approach is to instead sample from the light sources first. This way, if we exclude visibility for now, we can guarantee that our samples are going to be non-zero. This also means we can include the contributions from lights with no area.
 
-
 ## The Many Lights Sampling Algorithm
 
 So sampling using light source information is already a step in the right direction, but there's still room for improvement. For example, shouldn't we place less emphasis on lights that are either really weak, far away, or facing the other direction? That's where the many lights sampling algorithm comes into play.
@@ -35,18 +34,19 @@ Once the tree is constructed, we can traverse it when we're sampling light sourc
 
 One last thing that the algorithm does is to force splitting during traversal. This is because sometimes, especially in the upper levels of the BVH, a general idea of the total energy and orientation isn't enough information to decide which child is traverse towards. As a result, some splitting threshold is used so that if the normalized variance of the node is greater than the threshold, we just traverse both children just to be safe.
 
-
 ## Implementation Plan
 
-As discussed with Brecht and Lukas, the goal of this project is to progressively add support for more things. In other words, I'll be starting with just point lights first, and once those are working, I'll move on to other types. The first step is to actually construct the light BVH on the host, using information about the lights in the scene. Although this did take a while to implement, there's nothing too interesting. It's almost all contained in ``cycles/scene/light_tree.h`` and ``cycles/scene/light_tree.cpp``, where there's a few extra structs to help out with construction. Otherwise, the overall logic follows the construction of a BVH in PBRT, but the SAH is replaced with the surface area orientation heuristic (SAOH) described in the paper.
+As discussed with Brecht and Lukas, the goal of this project is to progressively add support for more things. In other words, I'll be starting with just point lights first, and once those are working, I'll move on to other types. The first step is to actually construct the light BVH on the host, using information about the lights in the scene. Although this did take a while to implement, there's nothing too interesting. It's almost all contained in `cycles/scene/light_tree.h` and `cycles/scene/light_tree.cpp`, where there's a few extra structs to help out with construction. Otherwise, the overall logic follows the construction of a BVH in PBRT, but the SAH is replaced with the surface area orientation heuristic (SAOH) described in the paper.
 
 Once the construction is completed on the host side, there has to be a way to transfer this information to the device for traversal. The one caveat is that the device must take in a linear array of data, so we have to flatten the light BVH nodes. To traverse the interior nodes as a flat array, we need the following information:
+
 - Index of the second child
 - Bounding box of the light cluster
 - Bounding cone of the cluster as described in the paper (orientation axis, $$\theta_o$$, $$\theta_e$$)
 - Total energy and energy variance of the cluster
 
 Note that here, we can construct the array such that the first child is always adjacent to the parent node. As a result, we only need to store the index of the second child. We also keep the leaf nodes as a separate flat array because they store slightly different information. Once we're at the leaf nodes, we need to know the following:
+
 - Number of lights in the leaf
 - Index of the first light in the light array
 - Bounding box of the cluster
@@ -54,7 +54,6 @@ Note that here, we can construct the array such that the first child is always a
 - Total energy of the cluster
 
 We can use the index of the second child to go from the interior node array to the leaf node array. if it's positive, we can assume the children are still interior nodes. Otherwise, if it's negative, then we can take the negative and index into the leaf onde array. Although there is some overlap between the interior and leaf nodes, we should be able to save some memory by avoiding storage of unused information. Once we're able to figure out how to traverse on the device, the last step should just be to figure out how to adjust the light PDF so that our estimators remain unbiased.
-
 
 ## Closing Thoughts
 

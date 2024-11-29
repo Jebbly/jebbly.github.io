@@ -19,6 +19,6 @@ This software rasterizer was completed with a few other teammates for UIUC's CS 
     The executable can load simple OBJ files, like Blender's Suzanne! This project surprised me with how... interesting Suzanne's topology is.
 </div>
 
-At its core though, it's still just a rasterizer that discretizes color values to the scale `` .:-=+*#%@``.
+At its core though, it's still just a rasterizer that discretizes color values to the scale ` .:-=+*#%@`.
 
 The code is also available on [GitHub](https://github.com/Jebbly/Software-Rasterizer/) to play around with.

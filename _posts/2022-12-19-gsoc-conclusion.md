@@ -22,7 +22,6 @@ Here's the render after 30 seconds of rendering using the master branch (left), 
 
 There's still some noise, but it's a lot better. Since I'm also writing this extremely late, I get to say that other people have picked up the work and got it merged into master!
 
-
 ## Closing Thoughts
 
 I've probably said it many times already, so I'll try to keep it short. All I can say is that Google Summer of Code was everything I wanted and expected it to be and more. Blender basically defined me as a teenager so being able to contribute to it has felt incredible. I'm really thankful for everyone who took the time to read my posts, upload test scenes, provide advice/resources, and contribute code. The whole process has taught me a lot and helped me develop more confidence as a computer scientist/programmer. Every company I've interviewed at this semester has also asked me about working with Blender, so I think it's safe to say that it's also helped me with my job search.

@@ -18,14 +18,13 @@ Here, that dark region is where the importance heuristic thinks that the area li
 
 The original paper doesn't really discuss any issues of this nature, but it does heavily emphasize that the adaptive splitting is an essential part of their work. The point of adaptive spltting is that sometimes, the light tree node's variance is pretty high, so it's safer to just sample from both the left and right child in those cases. However, the caveat here is that Cycles is structured such that the direct light sampling is expected to use a single light at a time, so we can't exactly just continue adding samples.
 
-
 ## Potential Solutions
+
 ### Resampled Importance Sampling
 
 The first proposed solution was to implement resampled importance sampling (RIS). This is a topic that I've only briefly skimmed over so far, and also not our final solution, so I'll keep this section brief. The general idea is that we'll do the adaptive splitting, but we keep track of all the samples in a list. Once we've populated our list, we can use a more refined computation (e.g. computing an actual `LightSample`) to weight each entry when we're choosing our final sample. This method kind of allows us to consider the proposed samples from adaptive splitting, and would be especially useful in cases like above where the original importance heuristic is off.
 
 There's a bit of nuance related to the functions used, the target distribution, and the size of the list. I'm not really going to get into the details here, but if you're interested, the paper I referenced was ["Importance Resampling for Global Illumination"](https://scholarsarchive.byu.edu/cgi/viewcontent.cgi?article=1662&context=etd) by Justin Talbot. In any case, the downside to this approach is that it generally assumes a fixed list size. However, we never really know how many adaptive splitting samples we'll be getting, and it's not the best in terms of memory usage either. It also means we'll have to do another pass through the list once we're done traversing the tree.
-
 
 ### Weighted Reservoir Sampling
 
@@ -40,9 +39,9 @@ $$
 $$
 
 There are a few big advantages to this approach, when our reservoir is size $$N = 1$$:
+
 - The memory usage is much better because we only need to keep track of the currently selected light and the accumulated weight of the samples;
 - The algorithm works with a stream of samples, so we don't need to worry about the specific number of adaptive splitting samples, and we can also compute it while we're traversing the light tree.
-
 
 ## PDF Considerations
 
@@ -82,10 +81,11 @@ $$
 The main idea is that this computation, even for this simple example, can be quite complicated. However, the proposed solution is to adjust our estimator such that $$p(X_i)$$ is equal to the probability of including $$X_i$$ as a candidate sample times the probability of selecting $$X_i$$ as our final sample.
 
 I'm still having some difficulty formalizing this, but consider the use of this estimator for the case of $$2$$. There are two cases where $$2$$ is selected as our final sample, with the corresponding probabilities:
+
 1. 2 is selected from the left ($$2/5$$) and 4 is selected from the right ($$4/9$$)
-    * 2 is selected out of the list ($$2/6$$)
+   - 2 is selected out of the list ($$2/6$$)
 2. 2 is selected from the left ($$2/5$$) and 5 is selected from the right ($$5/9$$)
-    * 2 is selected out of the list ($$2/7$$)
+   - 2 is selected out of the list ($$2/7$$)
 
 Intuitively speaking, if we look at the specific case for $$2 / p(X)$$, we would have the following frequencies:
 
@@ -101,10 +101,11 @@ $$
 
 where $$n$$ is the total number of lists containing some sample $$X$$ and $$p_i$$ is the probability that the rest of the list $$i$$ is constructed. Furthermore, my guess is that this will extend cleanly to the continuous case, although this is also where I'm having some trouble formalizing things.
 
-
 ## Closing Thoughts
 
 As mentioned at the top, there were a few reasons why this idea didn't pan out:
+
 1. It was hard to convince that this estimator would remain unbiased;
-2. Regardless of if it remained or not, each sample was taking too much time to compute. 
+2. Regardless of if it remained or not, each sample was taking too much time to compute.
+   
 But it was a really interesting idea! I also got to talk more about it with Chris Wyman (really cool person at NVIDIA who wrote a chapter about Weighted Reservoir Sampling in Raytracing Gems II) at SIGGRAPH 2022. That might deserve a post of its own, but the TLDR is that I volunteered there, met a lot of cool people, including Ron Roosendaal himself, and had lots of fun!
