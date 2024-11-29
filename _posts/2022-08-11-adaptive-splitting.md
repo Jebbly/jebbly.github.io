@@ -107,5 +107,5 @@ As mentioned at the top, there were a few reasons why this idea didn't pan out:
 
 1. It was hard to convince that this estimator would remain unbiased;
 2. Regardless of if it remained or not, each sample was taking too much time to compute.
-   
+
 But it was a really interesting idea! I also got to talk more about it with Chris Wyman (really cool person at NVIDIA who wrote a chapter about Weighted Reservoir Sampling in Raytracing Gems II) at SIGGRAPH 2022. That might deserve a post of its own, but the TLDR is that I volunteered there, met a lot of cool people, including Ron Roosendaal himself, and had lots of fun!
