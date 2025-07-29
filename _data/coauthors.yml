@@ -6,6 +6,22 @@
   - firstname: ["Brighten"]
     url: https://pbg.cs.illinois.edu/
 
+"kettunen":
+  - firstname: ["Markus"]
+    url: https://mkettunen.com/
+
+"lin":
+  - firstname: ["Daqi"]
+    url: https://dqlin.xyz/
+
+"ramamoorthi":
+  - firstname: ["Ravi"]
+    url: https://cseweb.ucsd.edu/~ravir/
+
 "shaffer":
   - firstname: ["Eric"]
     url: https://shaffer1.github.io/
+  
+"wyman":
+  - firstname: ["Chris"]
+    url: https://cwyman.org/
