@@ -6,7 +6,7 @@ title: blank # the website title (if blank, full name will be used instead)
 first_name: Jeffrey
 middle_name:
 last_name: Liu
-email: jliu179@illinois.edu
+email: jel233@ucsd.edu
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   Jeffrey Liu's Personal Website.
 footer_text: >
@@ -112,7 +112,7 @@ youtube_id: # your youtube channel id (youtube.com/@<youtube_id>)
 zotero_username: # your zotero username
 
 contact_note: >
-  I try my best to respond to meaningful emails and LinkedIn connections. If you would like to talk, please reach out!
+  I try my best to respond to meaningful messages. If you would like to talk, please reach out!
 
 # -----------------------------------------------------------------------------
 # Analytics and search engine verification
